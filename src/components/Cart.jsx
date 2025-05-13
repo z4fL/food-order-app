@@ -4,9 +4,10 @@ import {
   PlusIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
-import { useLocation, useNavigate } from "react-router";
 import dataProduct from "../data.json";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
+import { useNavigate } from "react-router";
+import { CartContext } from "../context/CartContext";
 
 function formatUang(subject) {
   const rupiah = subject.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
@@ -14,17 +15,17 @@ function formatUang(subject) {
 }
 
 const Cart = () => {
-  const location = useLocation();
+  const { cart } = useContext(CartContext);
   let navigate = useNavigate();
 
   useEffect(() => {
-    if (!location.state?.cart) {
+    if (!cart) {
       navigate("/");
     }
   });
 
-  const cart = location.state?.cart
-    ? location.state.cart.map((item) => {
+  const listCart = cart
+    ? cart.map((item) => {
         const product = dataProduct.find((p) => p.id === item.id);
         return {
           ...item,
@@ -39,7 +40,7 @@ const Cart = () => {
     : [];
 
   const handleBack = () => {
-    window.history.back();
+    navigate(-1);
   };
 
   return (
@@ -55,7 +56,7 @@ const Cart = () => {
         </div>
         <div className="mt-10">
           <div className="flex flex-col items-center gap-5">
-            {cart.map((item) => (
+            {listCart.map((item) => (
               <div key={item.nama} className="flex justify-start text-gray-700">
                 <img
                   src={item.gambar}

@@ -2,32 +2,37 @@ import {
   AdjustmentsHorizontalIcon,
   MagnifyingGlassIcon,
   MinusIcon,
-  PencilSquareIcon,
   ShoppingCartIcon,
 } from "@heroicons/react/24/outline";
 
-import data from "../data.json";
-import { useEffect, useState } from "react";
-import Loading from "./Loading";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
+import { CartContext } from "../context/CartContext";
+import Loading from "./Loading";
+import data from "../data.json";
 
 function formatUang(subject) {
   const rupiah = subject.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
   return `Rp${rupiah}`;
 }
 
-const ProductCard = ({ product, addToCart }) => {
+const ProductCard = ({ product, addToCart, cart }) => {
   const [counter, setCounter] = useState(0);
 
+  useEffect(() => {
+    const cartItem = cart.find((item) => item.id === product.id);
+    if (cartItem) {
+      setCounter(cartItem.quantity);
+    }
+  }, [cart, product.id]);
+
   const addItem = () => {
-    console.log("addItem");
     const newCounter = counter + 1;
     setCounter(newCounter);
     addToCart(product.id, newCounter);
   };
 
   const removeItem = () => {
-    console.log("removeItem");
     const newCounter = counter >= 1 ? counter - 1 : counter;
     setCounter(newCounter);
     addToCart(product.id, newCounter);
@@ -77,7 +82,7 @@ const ProductCard = ({ product, addToCart }) => {
   );
 };
 
-const ProductGrid = ({ addToCart }) => {
+const ProductGrid = ({ addToCart, cart }) => {
   return (
     <div className="pt-5 px-6">
       <div className="grid grid-cols-2 gap-6 content-start">
@@ -86,6 +91,7 @@ const ProductGrid = ({ addToCart }) => {
             key={product.id}
             product={product}
             addToCart={addToCart}
+            cart={cart}
           />
         ))}
       </div>
@@ -95,15 +101,22 @@ const ProductGrid = ({ addToCart }) => {
 
 const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [cart, setCart] = useState([]);
+  const isFirstRender = useRef(true);
+  const { cart, setCart } = useContext(CartContext);
+
   let navigate = useNavigate();
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
+    if (isFirstRender.current) {
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+      }, 2000);
 
-    return () => clearTimeout(timer);
+      isFirstRender.current = false; // Set ke false setelah render pertama
+      return () => clearTimeout(timer);
+    } else {
+      setIsLoading(false); // Pastikan loading tidak aktif saat navigasi kembali
+    }
   }, []);
 
   const addToCart = (productId, quantity) => {
@@ -123,9 +136,7 @@ const Home = () => {
   };
 
   const handleCheckout = () => {
-    navigate("cart", {
-      state: { cart },
-    });
+    navigate("cart");
   };
 
   if (isLoading) return <Loading />;
@@ -161,7 +172,7 @@ const Home = () => {
               Menu Populer
             </h4>
           </div>
-          <ProductGrid addToCart={addToCart} />
+          <ProductGrid addToCart={addToCart} cart={cart} />
         </div>
         <div className="sticky bottom-18 z-20 flex flex-col items-end mt-10">
           <button
