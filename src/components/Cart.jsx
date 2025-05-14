@@ -1,5 +1,6 @@
 import {
   ChevronLeftIcon,
+  ChevronRightIcon,
   MinusIcon,
   PlusIcon,
   TrashIcon,
@@ -44,8 +45,8 @@ const Cart = () => {
   };
 
   return (
-    <div className="mx-auto min-h-screen max-w-md bg-[#F8F8FF] relative">
-      <div className="relative px-6 pb-14">
+    <div className="flex flex-col mx-auto min-h-screen max-w-md bg-[#F8F8FF] relative">
+      <div className="flex-1 relative px-6 pb-14">
         <div className="flex pt-8">
           <button className="cursor-pointer" onClick={handleBack}>
             <ChevronLeftIcon className="w-8 h-8 text-gray-700" />
@@ -54,8 +55,8 @@ const Cart = () => {
             Meja 1
           </h3>
         </div>
-        <div className="mt-10">
-          <div className="flex flex-col items-center gap-5">
+        <div className="mt-10 mb-[260px]">
+          <div className="flex flex-col gap-5">
             {listCart.map((item) => (
               <div key={item.nama} className="flex justify-start text-gray-700">
                 <img
@@ -63,7 +64,7 @@ const Cart = () => {
                   alt={item.nama}
                   className="w-[130px] h-[130px] rounded-2xl"
                 />
-                <div className="flex flex-col font-poppins ml-5">
+                <div className="grow flex flex-col font-poppins ml-5">
                   <p className="font-medium text-xl capitalize">{item.nama}</p>
                   <span className="mt-3 text-xl font-bold">
                     {formatUang(item.totalHarga)}
@@ -87,6 +88,25 @@ const Cart = () => {
             ))}
           </div>
         </div>
+      </div>
+      <div className="sticky bottom-0 inset-x-0 bg-gray-900 px-12 py-10 rounded-t-3xl">
+        <div className="flex justify-between pb-7">
+          <span className="font-poppins font-medium text-xl text-white">
+            Catatan
+          </span>
+          <ChevronRightIcon className="w-7 h-7 text-white" />
+        </div>
+        <div className="flex justify-between pb-7">
+          <span className="font-poppins font-medium text-xl text-white">
+            Total
+          </span>
+          <span className="font-poppins font-bold text-2xl text-white">
+            {formatUang(51000)}
+          </span>
+        </div>
+        <button className="w-full bg-[#fb5f48] rounded-lg py-4 font-poppins font-medium text-xl text-white cursor-pointer ">
+          Pesan Sekarang
+        </button>
       </div>
     </div>
   );

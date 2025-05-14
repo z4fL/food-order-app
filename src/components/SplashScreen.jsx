@@ -1,4 +1,4 @@
-const Loading = () => {
+const SplashScreen = () => {
   return (
     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#F8F8FF]">
       <img src="/logo.png" alt="logo" className="w-24 mb-4" />
@@ -8,4 +8,4 @@ const Loading = () => {
   )
 }
 
-export default Loading
+export default SplashScreen

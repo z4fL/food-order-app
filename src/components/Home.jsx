@@ -5,10 +5,10 @@ import {
   ShoppingCartIcon,
 } from "@heroicons/react/24/outline";
 
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { CartContext } from "../context/CartContext";
-import Loading from "./Loading";
+import Loading from "./SplashScreen";
 import data from "../data.json";
 
 function formatUang(subject) {
@@ -100,24 +100,9 @@ const ProductGrid = ({ addToCart, cart }) => {
 };
 
 const Home = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const isFirstRender = useRef(true);
   const { cart, setCart } = useContext(CartContext);
 
   let navigate = useNavigate();
-
-  useEffect(() => {
-    if (isFirstRender.current) {
-      const timer = setTimeout(() => {
-        setIsLoading(false);
-      }, 2000);
-
-      isFirstRender.current = false; // Set ke false setelah render pertama
-      return () => clearTimeout(timer);
-    } else {
-      setIsLoading(false); // Pastikan loading tidak aktif saat navigasi kembali
-    }
-  }, []);
 
   const addToCart = (productId, quantity) => {
     setCart((prevCart) => {
@@ -138,8 +123,6 @@ const Home = () => {
   const handleCheckout = () => {
     navigate("cart");
   };
-
-  if (isLoading) return <Loading />;
 
   return (
     <div className="mx-auto min-h-screen max-w-md bg-[#F8F8FF] relative">
