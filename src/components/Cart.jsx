@@ -16,14 +16,14 @@ function formatUang(subject) {
 }
 
 const Cart = () => {
-  const { cart } = useContext(CartContext);
+  const { cart, setCart } = useContext(CartContext);
   let navigate = useNavigate();
 
   useEffect(() => {
-    if (!cart) {
+    if (cart && cart.length === 0) {
       navigate("/");
     }
-  });
+  }, [cart, navigate]);
 
   const listCart = cart
     ? cart.map((item) => {
@@ -42,6 +42,32 @@ const Cart = () => {
 
   const handleBack = () => {
     navigate(-1);
+  };
+
+  const handleCounter = (id, type) => {
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              quantity:
+                type === "+"
+                  ? item.quantity + 1
+                  : item.quantity > 1
+                  ? item.quantity - 1
+                  : item.quantity,
+            }
+          : item
+      )
+    );
+  };
+
+  // Calculate total price
+  const totalHarga = listCart.reduce((sum, item) => sum + item.totalHarga, 0);
+
+  // Remove item from cart
+  const handleRemove = (id) => {
+    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
   };
 
   return (
@@ -70,17 +96,26 @@ const Cart = () => {
                     {formatUang(item.totalHarga)}
                   </span>
                   <div className="flex items-center gap-5 mt-2.5">
-                    <button className="cursor-pointer">
+                    <button
+                      onClick={() => handleCounter(item.id, "-")}
+                      className="cursor-pointer"
+                    >
                       <MinusIcon className="w-7 h-7" />
                     </button>
                     <span className="text-2xl font-bold">{item.quantity}</span>
-                    <button className="cursor-pointer">
+                    <button
+                      onClick={() => handleCounter(item.id, "+")}
+                      className="cursor-pointer"
+                    >
                       <PlusIcon className="w-7 h-7" />
                     </button>
                   </div>
                 </div>
                 <div className="flex flex-col justify-center ml-5">
-                  <button className="cursor-pointer">
+                  <button
+                    className="cursor-pointer"
+                    onClick={() => handleRemove(item.id)}
+                  >
                     <TrashIcon className="w-9 h-9" />
                   </button>
                 </div>
@@ -101,7 +136,7 @@ const Cart = () => {
             Total
           </span>
           <span className="font-poppins font-bold text-2xl text-white">
-            {formatUang(51000)}
+            {formatUang(totalHarga)}
           </span>
         </div>
         <button className="w-full bg-[#fb5f48] rounded-lg py-4 font-poppins font-medium text-xl text-white cursor-pointer ">

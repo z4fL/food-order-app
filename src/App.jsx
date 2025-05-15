@@ -9,22 +9,20 @@ import ScrollToTop from "./utilities/ScrollToTop";
 import SplashScreen from "./components/SplashScreen";
 
 function App() {
-  const [showSplash, setShowSplash] = useState(false);
+  const [showSplash, setShowSplash] = useState(
+    () => !JSON.parse(sessionStorage.getItem("splashShown"))
+  );
 
   useEffect(() => {
-    const hasShown = sessionStorage.getItem("splashShown");
-    if (!hasShown) {
-      setShowSplash(true);
-      sessionStorage.setItem("splashShown", "true");
-      setTimeout(() => {
-        setShowSplash(false);
-      }, 2000);
-    }
+    setTimeout(() => {
+      setShowSplash(false);
+      sessionStorage.setItem("splashShown", JSON.stringify(true));
+    }, 2000);
   }, []);
 
-  if (showSplash) return <SplashScreen />
-
-  return (
+  return showSplash ? (
+    <SplashScreen />
+  ) : (
     <CartProvider>
       <ScrollToTop />
       <Routes>
