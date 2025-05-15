@@ -121,7 +121,7 @@ const Home = () => {
   };
 
   const handleCheckout = () => {
-    navigate("cart");
+    navigate("/cart");
   };
 
   return (

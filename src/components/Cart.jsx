@@ -70,6 +70,14 @@ const Cart = () => {
     setCart((prevCart) => prevCart.filter((item) => item.id !== id));
   };
 
+  const handleOrder = () => {
+    navigate("/detail-order", {
+      state: {
+        order: cart,
+      },
+    });
+  };
+
   return (
     <div className="flex flex-col mx-auto min-h-screen max-w-md bg-[#F8F8FF] relative">
       <div className="flex-1 relative px-6 pb-14">
@@ -139,7 +147,10 @@ const Cart = () => {
             {formatUang(totalHarga)}
           </span>
         </div>
-        <button className="w-full bg-[#fb5f48] rounded-lg py-4 font-poppins font-medium text-xl text-white cursor-pointer ">
+        <button
+          onClick={handleOrder}
+          className="w-full bg-[#fb5f48] rounded-lg py-4 font-poppins font-medium text-xl text-white cursor-pointer "
+        >
           Pesan Sekarang
         </button>
       </div>
