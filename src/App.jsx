@@ -7,6 +7,8 @@ import Cart from "./components/Cart";
 import DetailOrder from "./components/DetailOrder";
 import ScrollToTop from "./utilities/ScrollToTop";
 import SplashScreen from "./components/SplashScreen";
+import Dashboard from "./components/admin/Dashboard";
+import Login from "./components/admin/Login";
 
 function App() {
   const [showSplash, setShowSplash] = useState(
@@ -29,6 +31,8 @@ function App() {
         <Route index element={<Home />} />
         <Route path="cart" element={<Cart />} />
         <Route path="detail-order" element={<DetailOrder />} />
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="login" element={<Login />} />
       </Routes>
     </CartProvider>
   );
