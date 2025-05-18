@@ -9,6 +9,7 @@ import ScrollToTop from "./utilities/ScrollToTop";
 import SplashScreen from "./components/SplashScreen";
 import Dashboard from "./components/admin/Dashboard";
 import Login from "./components/admin/Login";
+import Menu from "./components/Menu";
 
 function App() {
   const [showSplash, setShowSplash] = useState(
@@ -29,7 +30,8 @@ function App() {
       <ScrollToTop />
       <Routes>
         <Route index element={<Home />} />
-        <Route path="cart" element={<Cart />} />
+        <Route path="menu/:nomorMeja" element={<Menu />} />
+        <Route path="cart/:nomorMeja" element={<Cart />} />
         <Route path="detail-order" element={<DetailOrder />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="login" element={<Login />} />

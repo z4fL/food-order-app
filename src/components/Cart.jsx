@@ -7,7 +7,7 @@ import {
 } from "@heroicons/react/24/outline";
 import dataProduct from "../data.json";
 import { useContext, useEffect } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { CartContext } from "../context/CartContext";
 
 function formatUang(subject) {
@@ -16,8 +16,9 @@ function formatUang(subject) {
 }
 
 const Cart = () => {
+  const { nomorMeja } = useParams();
   const { cart, setCart } = useContext(CartContext);
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (cart && cart.length === 0) {
@@ -71,11 +72,7 @@ const Cart = () => {
   };
 
   const handleOrder = () => {
-    navigate("/detail-order", {
-      state: {
-        order: cart,
-      },
-    });
+    console.log(`Meja: ${nomorMeja}, Cart: `, cart);
   };
 
   return (
