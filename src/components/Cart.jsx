@@ -9,6 +9,7 @@ import dataProduct from "../data.json";
 import { useContext, useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 import { CartContext } from "../context/CartContext";
+import axios from "axios";
 
 function formatUang(subject) {
   const rupiah = subject.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
@@ -22,9 +23,10 @@ const Cart = () => {
 
   useEffect(() => {
     if (cart && cart.length === 0) {
-      navigate("/");
+      navigate(`/menu/${nomorMeja}`);
     }
-  }, [cart, navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const listCart = cart
     ? cart.map((item) => {
@@ -68,11 +70,39 @@ const Cart = () => {
 
   // Remove item from cart
   const handleRemove = (id) => {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
+    setCart((prevCart) => {
+      const updatedCart = prevCart.filter((item) => item.id !== id);
+      return updatedCart;
+    });
+    if (cart.length === 0) {
+      console.log("ok");
+      navigate(`/menu/${nomorMeja}`);
+    }
   };
 
   const handleOrder = () => {
-    console.log(`Meja: ${nomorMeja}, Cart: `, cart);
+    const data = {
+      catatan: null,
+      meja: parseInt(nomorMeja),
+      details: listCart.map((item) => ({
+        produk_id: item.id,
+        nama_produk: item.nama,
+        harga_produk: item.harga,
+        qty: item.quantity,
+      })),
+    };
+
+    axios
+      .post("http://localhost:8000/api/orders", data)
+      .then((res) => {
+        console.log("sukses menambah pesanan!");
+        setCart([]);
+        navigate(`/detail-order/${res.data.data.uuid}`);
+      })
+      .catch((err) => {
+        alert("Gagal memproses pesanan.");
+        console.error(err);
+      });
   };
 
   return (
@@ -83,7 +113,7 @@ const Cart = () => {
             <ChevronLeftIcon className="w-8 h-8 text-gray-700" />
           </button>
           <h3 className="pl-8 font-poppins font-bold text-3xl text-gray-700">
-            Meja 1
+            Meja {nomorMeja}
           </h3>
         </div>
         <div className="mt-10 mb-[260px]">
@@ -145,7 +175,7 @@ const Cart = () => {
           </span>
         </div>
         <button
-          onClick={handleOrder}
+          onClick={() => handleOrder()}
           className="w-full bg-[#fb5f48] rounded-lg py-4 font-poppins font-medium text-xl text-white cursor-pointer "
         >
           Pesan Sekarang

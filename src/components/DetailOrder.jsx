@@ -1,5 +1,9 @@
-import { useLocation } from "react-router";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router";
+import axios from "axios";
+
 import dataProduct from "../data.json";
+import SplashScreen from "./SplashScreen";
 
 function formatUang(subject) {
   const rupiah = subject.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
@@ -7,31 +11,45 @@ function formatUang(subject) {
 }
 
 const DetailOrder = () => {
-  const { state } = useLocation();
+  const [detailOrder, setDetailOrder] = useState({});
+  const { uuid } = useParams();
+  const [isLoading, setIsLoading] = useState(true);
 
-  const listOrder = state.order
-    ? state.order.map((item) => {
-        const product = dataProduct.find((p) => p.id === item.id);
-        return {
-          ...item,
-          nama: product.nama,
-          harga: product.harga,
-          gambar: product.gambar,
-          kategori: product.kategori,
-          quantity: item.quantity,
-          totalHarga: item.quantity * product.harga,
-        };
-      })
-    : [];
+  useEffect(() => {
+    setIsLoading(true);
+    const fetchData = async () => {
+      await axios
+        .get(`http://localhost:8000/api/orders/${uuid}`)
+        .then((res) => {
+          console.log(res.data.data);
+          setDetailOrder(res.data.data);
+          setIsLoading(false);
+        });
+    };
 
-  const totalHarga = listOrder.reduce((sum, item) => sum + item.totalHarga, 0);
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (isLoading) {
+    return <SplashScreen />;
+  }
+
+  const dataOrder = detailOrder.details.map((item) => {
+    const product = dataProduct.find((p) => p.id === item.produk_id);
+    return {
+      ...item,
+      gambar: product.gambar,
+      kategori: product.kategori,
+    };
+  });
 
   return (
     <div className="mx-auto min-h-screen max-w-md bg-[#F8F8FF] relative">
       <div className="flex-1 relative px-6 pb-14">
         <div className="flex flex-col pt-8 pl-4">
           <h3 className="font-poppins font-bold text-3xl text-gray-700">
-            Meja 1
+            Meja {detailOrder.meja}
           </h3>
           <h4 className="font-poppins font-bold text-2xl text-gray-700">
             Detail Pesanan
@@ -39,20 +57,22 @@ const DetailOrder = () => {
         </div>
         <div className="mt-10 px-2">
           <div className="flex flex-col gap-5">
-            {listOrder.map((item) => (
-              <div key={item.nama} className="flex justify-start text-gray-700">
+            {dataOrder.map((item) => (
+              <div key={item.id} className="flex justify-start text-gray-700">
                 <img
                   src={item.gambar}
-                  alt={item.nama}
+                  alt={item.nama_produk}
                   className="w-[130px] h-[130px] rounded-2xl"
                 />
                 <div className="grow flex flex-col font-poppins ml-5">
-                  <p className="font-medium text-xl capitalize">{item.nama}</p>
+                  <p className="font-medium text-xl capitalize">
+                    {item.nama_produk}
+                  </p>
                   <span className="mt-2.5 text-xl font-medium">
-                    {item.quantity + " x " + item.harga}
+                    {item.qty + " x " + item.harga_produk}
                   </span>
                   <span className="mt-3 text-2xl font-bold">
-                    {formatUang(item.totalHarga)}
+                    {formatUang(item.total_harga)}
                   </span>
                 </div>
               </div>
@@ -64,7 +84,7 @@ const DetailOrder = () => {
             Total
           </h3>
           <h4 className="font-poppins font-bold text-3xl text-gray-700">
-            {formatUang(totalHarga)}
+            {formatUang(detailOrder.total_harga)}
           </h4>
         </div>
         <div className="flex flex-col mt-8 pl-4 gap-4">
@@ -72,7 +92,7 @@ const DetailOrder = () => {
             Catatan
           </h3>
           <h4 className="font-poppins font-regular text-lg text-gray-700">
-            tidak usah pake pake
+            {!detailOrder.catatan && "-"}
           </h4>
         </div>
       </div>

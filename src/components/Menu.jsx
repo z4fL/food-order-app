@@ -7,6 +7,7 @@ import {
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { CartContext } from "../context/CartContext";
+import axios from "axios";
 
 import data from "../data.json";
 
@@ -104,6 +105,28 @@ const Menu = () => {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const checkMeja = async (meja) => {
+      try {
+        await axios
+          .post("http://localhost:8000/api/orders/check-meja", {
+            meja: meja,
+          })
+          .then((res) => {
+            if (res.data.exists) {
+              console.log("Meja sedang digunakan!");
+              navigate("/");
+            }
+          });
+      } catch (error) {
+        console.error("Error:", error.response?.data || error.message);
+      }
+    };
+    
+    checkMeja(nomorMeja);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const addToCart = (productId, quantity) => {
     setCart((prevCart) => {
       const existingProduct = prevCart.find((item) => item.id === productId);
@@ -120,7 +143,7 @@ const Menu = () => {
     });
   };
 
-  const handleCheckout = () => {
+  const handleCart = () => {
     navigate(`/cart/${nomorMeja}`);
   };
 
@@ -128,7 +151,7 @@ const Menu = () => {
     <div className="mx-auto min-h-screen max-w-md bg-[#F8F8FF] relative">
       <div className="relative px-6 pb-14">
         <h3 className="pt-8 font-poppins font-bold text-3xl text-gray-700">
-          Meja 1
+          Meja {nomorMeja}
         </h3>
         <div className="flex justify-start items-center">
           <form className="py-7.5 w-full">
@@ -159,7 +182,7 @@ const Menu = () => {
         </div>
         <div className="sticky bottom-18 z-20 flex flex-col items-end mt-10">
           <button
-            onClick={handleCheckout}
+            onClick={handleCart}
             disabled={cart.length === 0}
             className={`py-3 px-4 bg-[#FF6D58] rounded-lg cursor-pointer group disabled:bg-[#b97267] text-white hover:text-gray-700 disabled:hover:text-white`}
           >
