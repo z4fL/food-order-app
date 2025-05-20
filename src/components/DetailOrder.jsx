@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import axios from "axios";
 
-import dataProduct from "../data.json";
 import SplashScreen from "./SplashScreen";
 
 function formatUang(subject) {
@@ -15,11 +14,14 @@ const DetailOrder = () => {
   const { uuid } = useParams();
   const [isLoading, setIsLoading] = useState(true);
 
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const storageUrl = import.meta.env.VITE_STORAGE_URL;
+
   useEffect(() => {
     setIsLoading(true);
     const fetchData = async () => {
       await axios
-        .get(`http://192.168.137.1:8000/api/orders/${uuid}`)
+        .get(`${apiUrl}/orders/${uuid}`)
         .then((res) => {
           console.log(res.data.data);
           setDetailOrder(res.data.data);
@@ -35,19 +37,10 @@ const DetailOrder = () => {
     return <SplashScreen />;
   }
 
-  const dataOrder = detailOrder.details.map((item) => {
-    const product = dataProduct.find((p) => p.id === item.produk_id);
-    return {
-      ...item,
-      gambar: product.gambar,
-      kategori: product.kategori,
-    };
-  });
-
   return (
     <div className="mx-auto min-h-screen max-w-md bg-[#F8F8FF] relative">
       <div className="flex-1 relative px-6 pb-14">
-        <div className="flex flex-col pt-8 pl-4">
+        <div className="flex flex-col pt-8 pl-2">
           <h3 className="font-poppins font-bold text-3xl text-gray-700">
             Meja {detailOrder.meja}
           </h3>
@@ -57,10 +50,13 @@ const DetailOrder = () => {
         </div>
         <div className="mt-10 px-2">
           <div className="flex flex-col gap-5">
-            {dataOrder.map((item) => (
-              <div key={item.id} className="flex justify-start items-center text-gray-700">
+            {detailOrder.details.map((item) => (
+              <div
+                key={item.id}
+                className="flex justify-start items-center text-gray-700"
+              >
                 <img
-                  src={item.gambar}
+                  src={`${storageUrl}/${item.gambar}`}
                   alt={item.nama_produk}
                   className="w-[110px] h-[110px] rounded-2xl"
                 />

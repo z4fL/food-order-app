@@ -2,7 +2,6 @@ import { Cog8ToothIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import dataProduk from '../../data.json'
 
 function formatUang(subject) {
   const rupiah = subject.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
@@ -42,26 +41,6 @@ const Dashboard = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Group order details by kategori from dataProduk
-  const groupedDetailsByKategori = {};
-
-  orders.forEach(order => {
-    order.details.forEach(detail => {
-      const produk = dataProduk.find(p => p.id === detail.id_produk);
-      if (produk) {
-        const kategori = produk.kategori;
-        if (!groupedDetailsByKategori[kategori]) {
-          groupedDetailsByKategori[kategori] = [];
-        }
-        groupedDetailsByKategori[kategori].push({
-          ...detail,
-          nama_produk: produk.nama_produk,
-          kategori,
-        });
-      }
-    });
-  });
-
   return (
     <div>
       <div className="mx-auto min-h-screen max-w-md bg-[#F8F8FF] relative">
@@ -78,35 +57,73 @@ const Dashboard = () => {
             Daftar Order
           </h3>
           <div className="mt-6">
-            {orders.map((item) => (
-              <div
-                key={item.id}
-                className="flex flex-col p-4 rounded-xl bg-white shadow"
-              >
-                <div className="mb-3">
-                  <h3 className="mb-1 font-poppins font-medium text-xl text-gray-700">
-                    Meja {item.meja}
-                  </h3>
-                  <h4 className="font-poppins font-medium text-lg text-gray-700">
-                    Total Harga {formatUang(item.total_harga)}
-                  </h4>
-                </div>
-                <div className="flex flex-col gap-5">
-                  {item.details.map((item) => (
-                    <div
-                      key={item.id}
-                      className="flex justify-start items-center text-gray-700"
-                    >
-                      <div className="grow flex flex-col font-poppins">
-                        <p className="font-medium text-base capitalize">
-                          {item.qty + " x " + item.nama_produk}
-                        </p>
-                      </div>
+            {orders.map((item) => {
+              const makanan = item.details.filter(
+                (d) => d.kategori === "makanan"
+              );
+              const minuman = item.details.filter(
+                (d) => d.kategori === "minuman"
+              );
+              return (
+                <div
+                  key={item.id}
+                  className="flex flex-col p-4 rounded-xl bg-white shadow"
+                >
+                  <div className="mb-3">
+                    <h3 className="mb-1 font-poppins font-medium text-xl text-gray-700">
+                      Meja {item.meja}
+                    </h3>
+                    <h4 className="font-poppins font-medium text-lg text-gray-700">
+                      Total Harga {formatUang(item.total_harga)}
+                    </h4>
+                  </div>
+                  <div>
+                    <div className="font-semibold">Makanan</div>
+                    <div className="flex flex-col gap-2 mb-4">
+                      {makanan.length > 0 ? (
+                        makanan.map((d) => (
+                          <div
+                            key={d.id}
+                            className="flex justify-start items-center text-gray-700"
+                          >
+                            <div className="grow flex flex-col font-poppins">
+                              <p className="font-medium text-base capitalize">
+                                {d.qty + " x " + d.nama_produk}
+                              </p>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-gray-400 text-sm">
+                          Tidak ada makanan
+                        </div>
+                      )}
                     </div>
-                  ))}
+                    <div className="font-semibold">Minuman</div>
+                    <div className="flex flex-col gap-2">
+                      {minuman.length > 0 ? (
+                        minuman.map((d) => (
+                          <div
+                            key={d.id}
+                            className="flex justify-start items-center text-gray-700"
+                          >
+                            <div className="grow flex flex-col font-poppins">
+                              <p className="font-medium text-base capitalize">
+                                {d.qty + " x " + d.nama_produk}
+                              </p>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-gray-400 text-sm">
+                          Tidak ada minuman
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>

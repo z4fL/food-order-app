@@ -24,7 +24,7 @@ const ProductCard = ({ product, addToCart, cart }) => {
   useEffect(() => {
     const cartItem = cart.find((item) => item.id === product.id);
     if (cartItem) {
-      setCounter(cartItem.quantity);
+      setCounter(cartItem.qty);
     }
   }, [cart, product.id]);
 
@@ -135,6 +135,9 @@ const Menu = () => {
   }, []);
 
   const addToCart = (productId, quantity) => {
+    const product = produks.find((p) => p.id === productId);
+    if (!product) return; // Optionally handle missing product
+
     setCart((prevCart) => {
       const existingProduct = prevCart.find((item) => item.id === productId);
       if (existingProduct) {
@@ -142,10 +145,11 @@ const Menu = () => {
           return prevCart.filter((item) => item.id !== productId);
         }
         return prevCart.map((item) =>
-          item.id === productId ? { ...item, quantity } : item
+          item.id === productId ? { ...item, qty: quantity } : item
         );
       } else {
-        return [...prevCart, { id: productId, quantity }];
+        // Add all product properties plus quantity
+        return [...prevCart, { ...product, qty: quantity }];
       }
     });
   };

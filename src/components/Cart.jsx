@@ -5,7 +5,6 @@ import {
   PlusIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
-import dataProduct from "../data.json";
 import { useContext, useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 import { CartContext } from "../context/CartContext";
@@ -21,24 +20,22 @@ const Cart = () => {
   const { cart, setCart } = useContext(CartContext);
   const navigate = useNavigate();
 
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const storageUrl = import.meta.env.VITE_STORAGE_URL;
+
   useEffect(() => {
     if (cart && cart.length === 0) {
       navigate(`/menu/${nomorMeja}`);
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const listCart = cart
     ? cart.map((item) => {
-        const product = dataProduct.find((p) => p.id === item.id);
         return {
           ...item,
-          nama: product.nama,
-          harga: product.harga,
-          gambar: product.gambar,
-          kategori: product.kategori,
-          quantity: item.quantity,
-          totalHarga: item.quantity * product.harga,
+          totalHarga: item.qty * item.harga,
         };
       })
     : [];
@@ -55,10 +52,10 @@ const Cart = () => {
               ...item,
               quantity:
                 type === "+"
-                  ? item.quantity + 1
-                  : item.quantity > 1
-                  ? item.quantity - 1
-                  : item.quantity,
+                  ? item.qty + 1
+                  : item.qty > 1
+                  ? item.qty - 1
+                  : item.qty,
             }
           : item
       )
@@ -88,12 +85,12 @@ const Cart = () => {
         produk_id: item.id,
         nama_produk: item.nama,
         harga_produk: item.harga,
-        qty: item.quantity,
+        qty: item.qty,
       })),
     };
 
     axios
-      .post("http://192.168.137.1:8000/api/orders", data)
+      .post(`${apiUrl}/orders`, data)
       .then((res) => {
         console.log("sukses menambah pesanan!");
         setCart([]);
@@ -119,14 +116,19 @@ const Cart = () => {
         <div className="mt-10 mb-[260px]">
           <div className="flex flex-col gap-5">
             {listCart.map((item) => (
-              <div key={item.nama} className="flex justify-start items-center text-gray-700">
+              <div
+                key={item.nama}
+                className="flex justify-start items-center text-gray-700"
+              >
                 <img
-                  src={item.gambar}
+                  src={`${storageUrl}/${item.gambar}`}
                   alt={item.nama}
                   className="w-[110px] h-[110px] rounded-2xl"
                 />
                 <div className="grow flex flex-col font-poppins ml-5">
-                  <p className="font-medium text-base capitalize">{item.nama}</p>
+                  <p className="font-medium text-base capitalize">
+                    {item.nama}
+                  </p>
                   <span className="mt-1 text-lg font-bold">
                     {formatUang(item.totalHarga)}
                   </span>
@@ -137,7 +139,7 @@ const Cart = () => {
                     >
                       <MinusIcon className="w-5 h-5" />
                     </button>
-                    <span className="text-2xl font-bold">{item.quantity}</span>
+                    <span className="text-2xl font-bold">{item.qty}</span>
                     <button
                       onClick={() => handleCounter(item.id, "+")}
                       className="cursor-pointer"
