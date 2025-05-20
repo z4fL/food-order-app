@@ -1,5 +1,7 @@
 import {
   AdjustmentsHorizontalIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
   MagnifyingGlassIcon,
   MinusIcon,
   ShoppingCartIcon,
@@ -9,8 +11,6 @@ import { useNavigate, useParams } from "react-router";
 import { CartContext } from "../context/CartContext";
 import axios from "axios";
 
-import data from "../data.json";
-
 function formatUang(subject) {
   const rupiah = subject.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
   return `Rp${rupiah}`;
@@ -18,6 +18,8 @@ function formatUang(subject) {
 
 const ProductCard = ({ product, addToCart, cart }) => {
   const [counter, setCounter] = useState(0);
+
+  const storageUrl = import.meta.env.VITE_STORAGE_URL;
 
   useEffect(() => {
     const cartItem = cart.find((item) => item.id === product.id);
@@ -64,17 +66,17 @@ const ProductCard = ({ product, addToCart, cart }) => {
             <></>
           )}
           <img
-            src={product.gambar}
+            src={`${storageUrl}/${product.gambar}`}
             alt={product.nama}
             className="w-[122px] h-[110px] rounded-2xl"
           />
         </div>
       </div>
       <div className="p-3.5 mt-12">
-        <p className="pb-2 font-medium text-lg text-gray-700 capitalize">
+        <p className="pb-2 font-medium text-base text-gray-700 capitalize">
           {product.nama}
         </p>
-        <p className="font-bold text-xl text-gray-900">
+        <p className="font-bold text-lg text-gray-900">
           {formatUang(product.harga)}
         </p>
       </div>
@@ -82,49 +84,54 @@ const ProductCard = ({ product, addToCart, cart }) => {
   );
 };
 
-const ProductGrid = ({ addToCart, cart }) => {
-  return (
-    <div className="pt-5 px-6">
-      <div className="grid grid-cols-2 gap-6 content-start">
-        {data.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            addToCart={addToCart}
-            cart={cart}
-          />
-        ))}
-      </div>
-    </div>
-  );
-};
-
 const Menu = () => {
   const { nomorMeja } = useParams();
+  const [produks, setProduks] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const { cart, setCart } = useContext(CartContext);
 
+  const [showMakanan, setShowMakanan] = useState(true);
+  const [showMinuman, setShowMinuman] = useState(true);
   const navigate = useNavigate();
 
+  const apiUrl = import.meta.env.VITE_API_URL;
+
+  const checkMeja = async (meja) => {
+    try {
+      await axios
+        .post(`${apiUrl}/orders/check-meja`, {
+          meja: meja,
+        })
+        .then((res) => {
+          if (res.data.exists) {
+            console.log("Meja sedang digunakan!");
+            navigate("/");
+          }
+        });
+    } catch (error) {
+      console.error("Error:", error.response?.data || error.message);
+    }
+  };
+
+  const fetchData = async () => {
+    setIsLoading(true);
+    await axios
+      .get(`${apiUrl}/produks`)
+      .then((res) => {
+        setProduks(res.data);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch products:", err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
   useEffect(() => {
-    const checkMeja = async (meja) => {
-      try {
-        await axios
-          .post("http://localhost:8000/api/orders/check-meja", {
-            meja: meja,
-          })
-          .then((res) => {
-            if (res.data.exists) {
-              console.log("Meja sedang digunakan!");
-              navigate("/");
-            }
-          });
-      } catch (error) {
-        console.error("Error:", error.response?.data || error.message);
-      }
-    };
-    
     checkMeja(nomorMeja);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const addToCart = (productId, quantity) => {
@@ -149,7 +156,7 @@ const Menu = () => {
 
   return (
     <div className="mx-auto min-h-screen max-w-md bg-[#F8F8FF] relative">
-      <div className="relative px-6 pb-14">
+      <div className="relative px-6 pb-28">
         <h3 className="pt-8 font-poppins font-bold text-3xl text-gray-700">
           Meja {nomorMeja}
         </h3>
@@ -173,22 +180,93 @@ const Menu = () => {
           </button>
         </div>
         <div>
-          <div className="flex justify-between items-center">
-            <h4 className="font-poppins font-medium text-2xl text-gray-700">
-              Menu Populer
-            </h4>
+          {isLoading ? (
+            <div className="flex justify-center items-center">
+              <div className="loader"></div>
+            </div>
+          ) : (
+            <>
+              <div className="flex justify-between items-center">
+                <h4 className="font-poppins font-medium text-2xl text-gray-700">
+                  Makanan
+                </h4>
+                {showMakanan ? (
+                  <ChevronUpIcon
+                    className="w-6 h-6 text-gray-900"
+                    onClick={() => setShowMakanan((prev) => !prev)}
+                  />
+                ) : (
+                  <ChevronDownIcon
+                    className="w-6 h-6 text-gray-900"
+                    onClick={() => setShowMakanan((prev) => !prev)}
+                  />
+                )}
+              </div>
+              <div
+                id="makanan"
+                className={`pt-5 pb-6 ${!showMakanan && "hidden"}`}
+              >
+                <div className="grid grid-cols-2 gap-6 content-start">
+                  {produks
+                    .filter((product) => product.kategori === "makanan")
+                    .map((product) => (
+                      <ProductCard
+                        key={product.id}
+                        product={product}
+                        addToCart={addToCart}
+                        cart={cart}
+                      />
+                    ))}
+                </div>
+              </div>
+
+              <div className="flex justify-between items-center mt-6 ">
+                <h4 className="font-poppins font-medium text-2xl text-gray-700">
+                  Minuman
+                </h4>
+                {showMinuman ? (
+                  <ChevronUpIcon
+                    className="w-6 h-6 text-gray-900"
+                    onClick={() => setShowMinuman((prev) => !prev)}
+                  />
+                ) : (
+                  <ChevronDownIcon
+                    className="w-6 h-6 text-gray-900"
+                    onClick={() => setShowMinuman((prev) => !prev)}
+                  />
+                )}
+              </div>
+              <div
+                id="minuman"
+                className={`pt-5 pb-6 ${!showMinuman && "hidden"}`}
+              >
+                <div className="grid grid-cols-2 gap-6 content-start">
+                  {produks
+                    .filter((product) => product.kategori === "minuman")
+                    .map((product) => (
+                      <ProductCard
+                        key={product.id}
+                        product={product}
+                        addToCart={addToCart}
+                        cart={cart}
+                      />
+                    ))}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+        {!isLoading && (
+          <div className="fixed right-6 bottom-10 z-20 flex flex-col items-end mt-10">
+            <button
+              onClick={handleCart}
+              disabled={cart.length === 0}
+              className={`py-3 px-4 bg-[#FF6D58] rounded-lg cursor-pointer group disabled:bg-[#b97267] text-white hover:text-gray-700 disabled:hover:text-white`}
+            >
+              <ShoppingCartIcon className="w-8 h-8" />
+            </button>
           </div>
-          <ProductGrid addToCart={addToCart} cart={cart} />
-        </div>
-        <div className="sticky bottom-18 z-20 flex flex-col items-end mt-10">
-          <button
-            onClick={handleCart}
-            disabled={cart.length === 0}
-            className={`py-3 px-4 bg-[#FF6D58] rounded-lg cursor-pointer group disabled:bg-[#b97267] text-white hover:text-gray-700 disabled:hover:text-white`}
-          >
-            <ShoppingCartIcon className="w-8 h-8" />
-          </button>
-        </div>
+        )}
       </div>
     </div>
   );

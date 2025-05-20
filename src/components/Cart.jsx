@@ -93,14 +93,14 @@ const Cart = () => {
     };
 
     axios
-      .post("http://localhost:8000/api/orders", data)
+      .post("http://192.168.137.1:8000/api/orders", data)
       .then((res) => {
         console.log("sukses menambah pesanan!");
         setCart([]);
         navigate(`/detail-order/${res.data.data.uuid}`);
       })
       .catch((err) => {
-        alert("Gagal memproses pesanan.");
+        alert(err);
         console.error(err);
       });
   };
@@ -112,37 +112,37 @@ const Cart = () => {
           <button className="cursor-pointer" onClick={handleBack}>
             <ChevronLeftIcon className="w-8 h-8 text-gray-700" />
           </button>
-          <h3 className="pl-8 font-poppins font-bold text-3xl text-gray-700">
+          <h3 className="pl-4 font-poppins font-bold text-3xl text-gray-700">
             Meja {nomorMeja}
           </h3>
         </div>
         <div className="mt-10 mb-[260px]">
           <div className="flex flex-col gap-5">
             {listCart.map((item) => (
-              <div key={item.nama} className="flex justify-start text-gray-700">
+              <div key={item.nama} className="flex justify-start items-center text-gray-700">
                 <img
                   src={item.gambar}
                   alt={item.nama}
-                  className="w-[130px] h-[130px] rounded-2xl"
+                  className="w-[110px] h-[110px] rounded-2xl"
                 />
                 <div className="grow flex flex-col font-poppins ml-5">
-                  <p className="font-medium text-xl capitalize">{item.nama}</p>
-                  <span className="mt-3 text-xl font-bold">
+                  <p className="font-medium text-base capitalize">{item.nama}</p>
+                  <span className="mt-1 text-lg font-bold">
                     {formatUang(item.totalHarga)}
                   </span>
-                  <div className="flex items-center gap-5 mt-2.5">
+                  <div className="flex items-center gap-4 mt-2.5">
                     <button
                       onClick={() => handleCounter(item.id, "-")}
                       className="cursor-pointer"
                     >
-                      <MinusIcon className="w-7 h-7" />
+                      <MinusIcon className="w-5 h-5" />
                     </button>
                     <span className="text-2xl font-bold">{item.quantity}</span>
                     <button
                       onClick={() => handleCounter(item.id, "+")}
                       className="cursor-pointer"
                     >
-                      <PlusIcon className="w-7 h-7" />
+                      <PlusIcon className="w-5 h-5" />
                     </button>
                   </div>
                 </div>
@@ -159,14 +159,14 @@ const Cart = () => {
           </div>
         </div>
       </div>
-      <div className="sticky bottom-0 inset-x-0 bg-gray-900 px-12 py-10 rounded-t-3xl">
-        <div className="flex justify-between pb-7">
-          <span className="font-poppins font-medium text-xl text-white">
+      <div className="sticky bottom-0 inset-x-0 bg-gray-900 px-10 py-7 rounded-t-3xl">
+        <div className="flex justify-between pb-3">
+          <span className="font-poppins font-medium text-lg text-white">
             Catatan
           </span>
-          <ChevronRightIcon className="w-7 h-7 text-white" />
+          <ChevronRightIcon className="w-6 h-6 text-white" />
         </div>
-        <div className="flex justify-between pb-7">
+        <div className="flex justify-between pb-4">
           <span className="font-poppins font-medium text-xl text-white">
             Total
           </span>
@@ -176,7 +176,7 @@ const Cart = () => {
         </div>
         <button
           onClick={() => handleOrder()}
-          className="w-full bg-[#fb5f48] rounded-lg py-4 font-poppins font-medium text-xl text-white cursor-pointer "
+          className="w-full bg-[#fb5f48] rounded-lg py-4 font-poppins font-medium text-xl text-white cursor-pointer"
         >
           Pesan Sekarang
         </button>
