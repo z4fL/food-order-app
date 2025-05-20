@@ -5,10 +5,11 @@ import { useNavigate } from "react-router";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
+
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     if (localStorage.getItem("access_token")) {
@@ -24,7 +25,7 @@ const Login = () => {
     formData.append("password", password);
 
     await axios
-      .post("http://localhost:8000/api/login", formData)
+      .post(apiUrl + "/login", formData)
       .then((res) => {
         localStorage.setItem("access_token", res.data.access_token);
 
