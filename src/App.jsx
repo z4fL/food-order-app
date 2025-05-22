@@ -10,6 +10,7 @@ import SplashScreen from "./components/SplashScreen";
 import Dashboard from "./components/admin/Dashboard";
 import Login from "./components/admin/Login";
 import Menu from "./components/Menu";
+import DetailDashboard from "./components/admin/DetailDashboard";
 
 function App() {
   const [showSplash, setShowSplash] = useState(
@@ -34,6 +35,7 @@ function App() {
         <Route path="cart/:nomorMeja" element={<Cart />} />
         <Route path="detail-order/:uuid" element={<DetailOrder />} />
         <Route path="dashboard" element={<Dashboard />} />
+        <Route path="dashboard/:uuid" element={<DetailDashboard />} />
         <Route path="login" element={<Login />} />
       </Routes>
     </CartProvider>
