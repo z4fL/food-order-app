@@ -24,6 +24,12 @@ function App() {
     }, 2000);
   }, []);
 
+  // ProtectedRoute component to guard admin routes
+  const ProtectedRoute = ({ children }) => {
+    const accessToken = localStorage.getItem("access_token");
+    return accessToken ? children : <Login />;
+  };
+
   return showSplash ? (
     <SplashScreen />
   ) : (
@@ -34,8 +40,22 @@ function App() {
         <Route path="menu/:nomorMeja" element={<Menu />} />
         <Route path="cart/:nomorMeja" element={<Cart />} />
         <Route path="detail-order/:uuid" element={<DetailOrder />} />
-        <Route path="dashboard" element={<Dashboard />} />
-        <Route path="dashboard/:uuid" element={<DetailDashboard />} />
+        <Route
+          path="dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="dashboard/:uuid"
+          element={
+            <ProtectedRoute>
+              <DetailDashboard />
+            </ProtectedRoute>
+          }
+        />
         <Route path="login" element={<Login />} />
       </Routes>
     </CartProvider>

@@ -9,11 +9,7 @@ import { useContext, useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 import { CartContext } from "../context/CartContext";
 import axios from "axios";
-
-function formatUang(subject) {
-  const rupiah = subject.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
-  return `Rp${rupiah}`;
-}
+import formatRupiah from "../utilities/FormatRupiah";
 
 const Cart = () => {
   const { nomorMeja } = useParams();
@@ -130,7 +126,7 @@ const Cart = () => {
                     {item.nama}
                   </p>
                   <span className="mt-1 text-lg font-bold">
-                    {formatUang(item.totalHarga)}
+                    {formatRupiah(item.totalHarga)}
                   </span>
                   <div className="flex items-center gap-4 mt-2.5">
                     <button
@@ -173,7 +169,7 @@ const Cart = () => {
             Total
           </span>
           <span className="font-poppins font-bold text-2xl text-white">
-            {formatUang(totalHarga)}
+            {formatRupiah(totalHarga)}
           </span>
         </div>
         <button

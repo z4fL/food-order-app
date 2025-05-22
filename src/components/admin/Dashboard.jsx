@@ -3,11 +3,7 @@ import axios from "axios";
 import Pusher from "pusher-js";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-
-function formatUang(subject) {
-  const rupiah = subject.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
-  return `Rp${rupiah}`;
-}
+import formatRupiah from "../../utilities/FormatRupiah";
 
 const Dashboard = () => {
   const [orders, setOrders] = useState([]);
@@ -24,7 +20,6 @@ const Dashboard = () => {
     try {
       const res = await axios.get(apiUrl + "/orders");
       setOrders(res.data.data);
-      console.log(res.data.data);
     } catch (error) {
       if (error.response && error.response.status === 401) {
         localStorage.removeItem("access_token");
@@ -36,17 +31,12 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    if (!accessToken) {
-      navigate("/login");
-    }
-
     const pusher = new Pusher(pusherKey, {
       cluster: pusherCluster,
     });
 
     const channel = pusher.subscribe("orders");
     channel.bind("order.created", function (data) {
-      console.log("ada order baru!");
       setOrders((prev) => [data.order, ...prev]);
     });
 
@@ -98,7 +88,7 @@ const Dashboard = () => {
                       Meja {item.meja}
                     </h3>
                     <h4 className="font-poppins font-medium text-lg text-gray-700">
-                      Total Harga {formatUang(item.total_harga)}
+                      Total Harga {formatRupiah(item.total_harga)}
                     </h4>
                   </div>
                   <div>

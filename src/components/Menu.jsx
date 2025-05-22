@@ -10,11 +10,7 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { CartContext } from "../context/CartContext";
 import axios from "axios";
-
-function formatUang(subject) {
-  const rupiah = subject.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
-  return `Rp${rupiah}`;
-}
+import formatRupiah from "../utilities/FormatRupiah";
 
 const ProductCard = ({ product, addToCart, cart }) => {
   const [counter, setCounter] = useState(0);
@@ -77,7 +73,7 @@ const ProductCard = ({ product, addToCart, cart }) => {
           {product.nama}
         </p>
         <p className="font-bold text-lg text-gray-900">
-          {formatUang(product.harga)}
+          {formatRupiah(product.harga)}
         </p>
       </div>
     </div>
