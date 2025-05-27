@@ -15,7 +15,7 @@ const Login = () => {
     if (localStorage.getItem("access_token")) {
       navigate("/dashboard");
     }
-  });
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
