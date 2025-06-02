@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
+import { ChevronLeftIcon } from "@heroicons/react/24/outline";
 
 import formatRupiah from "../../utilities/FormatRupiah";
 
@@ -8,6 +9,7 @@ const DetailDashboard = () => {
   const [detailOrder, setDetailOrder] = useState({});
   const { uuid } = useParams();
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   const apiUrl = import.meta.env.VITE_API_URL;
   const storageUrl = import.meta.env.VITE_STORAGE_URL;
@@ -48,6 +50,10 @@ const DetailDashboard = () => {
     }
   };
 
+  const handleBack = () => {
+    navigate(-1);
+  };
+
   return (
     <div className="mx-auto min-h-screen max-w-md bg-[#F8F8FF] relative">
       {isLoading && (
@@ -56,13 +62,18 @@ const DetailDashboard = () => {
         </div>
       )}
       <div className="flex-1 relative px-6 pb-14">
-        <div className="flex flex-col pt-8 pl-2">
-          <h3 className="font-poppins font-bold text-3xl text-gray-700">
-            Meja {detailOrder.meja}
-          </h3>
-          <h4 className="font-poppins font-bold text-2xl text-gray-700">
-            Detail Pesanan
-          </h4>
+        <div className="flex pt-8">
+          <button className="cursor-pointer" onClick={handleBack}>
+            <ChevronLeftIcon className="w-8 h-8 text-gray-700" />
+          </button>
+          <div className="flex flex-col pl-5">
+            <h3 className="font-poppins font-bold text-3xl text-gray-700">
+              Meja {detailOrder.meja}
+            </h3>
+            <h4 className="font-poppins font-bold text-2xl text-gray-700">
+              Detail Pesanan
+            </h4>
+          </div>
         </div>
         <div className="mt-4">
           <div className="flex gap-2 font-poppins">

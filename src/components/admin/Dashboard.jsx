@@ -7,6 +7,7 @@ import formatRupiah from "../../utilities/FormatRupiah";
 
 const Dashboard = () => {
   const [orders, setOrders] = useState([]);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const accessToken = localStorage.getItem("access_token");
   const navigate = useNavigate();
@@ -54,6 +55,22 @@ const Dashboard = () => {
     navigate(`/dashboard/${uuid}`);
   };
 
+  const handleLogout = () => {
+    axios
+      .post(
+        `${apiUrl}/logout`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      )
+      .catch((err) => {
+        console.log(err);
+      });
+    localStorage.removeItem("access_token");
+    navigate("/login");
+  };
+
   return (
     <div>
       <div className="mx-auto min-h-screen max-w-md bg-[#F8F8FF] relative">
@@ -62,9 +79,24 @@ const Dashboard = () => {
             <h3 className="font-poppins font-bold text-3xl text-gray-700">
               Dashboard
             </h3>
-            <button className="p-2 cursor-pointer group">
-              <Cog8ToothIcon className="w-10 h-10 text-gray-700 group-active:text-[#FF6D58]" />
-            </button>
+            <div className="relative">
+              <button className="p-2 cursor-pointer group">
+                <Cog8ToothIcon
+                  onClick={() => setDropdownOpen((prev) => !prev)}
+                  className="w-10 h-10 text-gray-700 group-active:text-[#FF6D58]"
+                />
+              </button>
+              {dropdownOpen && (
+                <div className="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg font-poppins z-10">
+                  <button
+                    className="block w-full text-lg text-left px-5 py-3 text-gray-700 hover:bg-gray-100"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
           <h3 className="font-poppins font-medium text-2xl text-gray-700 mt-8">
             Daftar Order
