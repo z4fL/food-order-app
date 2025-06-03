@@ -19,7 +19,9 @@ const Dashboard = () => {
   const fetchDataOrder = async () => {
     axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
     try {
-      const res = await axios.get(apiUrl + "/orders");
+      const res = await axios.get(apiUrl + "/orders", {
+        headers: { "ngrok-skip-browser-warning": "1" },
+      });
       setOrders(res.data.data);
     } catch (error) {
       if (error.response && error.response.status === 401) {

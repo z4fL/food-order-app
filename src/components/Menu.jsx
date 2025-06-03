@@ -12,10 +12,10 @@ import { CartContext } from "../context/CartContext";
 import axios from "axios";
 import formatRupiah from "../utilities/FormatRupiah";
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 const ProductCard = ({ product, addToCart, cart }) => {
   const [counter, setCounter] = useState(0);
-
-  const storageUrl = import.meta.env.VITE_STORAGE_URL;
 
   useEffect(() => {
     const cartItem = cart.find((item) => item.id === product.id);
@@ -62,7 +62,7 @@ const ProductCard = ({ product, addToCart, cart }) => {
             <></>
           )}
           <img
-            src={`${storageUrl}/${product.gambar}`}
+            src={product.gambar}
             alt={product.nama}
             className="w-[122px] h-[110px] rounded-2xl"
           />
@@ -90,14 +90,16 @@ const Menu = () => {
   const [showMinuman, setShowMinuman] = useState(true);
   const navigate = useNavigate();
 
-  const apiUrl = import.meta.env.VITE_API_URL;
-
   const checkMeja = async (meja) => {
     try {
       await axios
-        .post(`${apiUrl}/orders/check-meja`, {
-          meja: meja,
-        })
+        .post(
+          `${apiUrl}/orders/check-meja`,
+          {
+            meja: meja,
+          },
+          { headers: { "ngrok-skip-browser-warning": "1" } }
+        )
         .then((res) => {
           if (res.data.exists) {
             console.log("Meja sedang digunakan!");
@@ -112,7 +114,9 @@ const Menu = () => {
   const fetchData = async () => {
     setIsLoading(true);
     await axios
-      .get(`${apiUrl}/produks`)
+      .get(`${apiUrl}/produks`, {
+        headers: { "ngrok-skip-browser-warning": "1" },
+      })
       .then((res) => {
         setProduks(res.data);
       })

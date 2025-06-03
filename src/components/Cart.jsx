@@ -17,7 +17,6 @@ const Cart = () => {
   const navigate = useNavigate();
 
   const apiUrl = import.meta.env.VITE_API_URL;
-  const storageUrl = import.meta.env.VITE_STORAGE_URL;
 
   useEffect(() => {
     if (cart && cart.length === 0) {
@@ -86,7 +85,9 @@ const Cart = () => {
     };
 
     axios
-      .post(`${apiUrl}/orders`, data)
+      .post(`${apiUrl}/orders`, data, {
+        headers: { "ngrok-skip-browser-warning": "1" },
+      })
       .then((res) => {
         console.log("sukses menambah pesanan!");
         setCart([]);
@@ -117,7 +118,7 @@ const Cart = () => {
                 className="flex justify-start items-center text-gray-700"
               >
                 <img
-                  src={`${storageUrl}/${item.gambar}`}
+                  src={item.gambar}
                   alt={item.nama}
                   className="w-[110px] h-[110px] rounded-2xl"
                 />

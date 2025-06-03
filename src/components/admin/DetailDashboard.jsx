@@ -12,15 +12,15 @@ const DetailDashboard = () => {
   const navigate = useNavigate();
 
   const apiUrl = import.meta.env.VITE_API_URL;
-  const storageUrl = import.meta.env.VITE_STORAGE_URL;
-
   const accessToken = localStorage.getItem("access_token");
 
   useEffect(() => {
     setIsLoading(true);
     const fetchData = async () => {
       await axios
-        .get(`${apiUrl}/orders/${uuid}`)
+        .get(`${apiUrl}/orders/${uuid}`, {
+          headers: { "ngrok-skip-browser-warning": "1" },
+        })
         .then((res) => {
           setDetailOrder(res.data.data);
         })
@@ -38,7 +38,11 @@ const DetailDashboard = () => {
       setIsLoading(true);
       axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
       await axios
-        .put(`${apiUrl}/orders/${uuid}`, { status: newStatus })
+        .put(
+          `${apiUrl}/orders/${uuid}`,
+          { status: newStatus },
+          { headers: { "ngrok-skip-browser-warning": "1" } }
+        )
         .then((res) => {
           console.log(res.data);
         });
@@ -126,7 +130,7 @@ const DetailDashboard = () => {
                       className="flex justify-start items-center text-gray-700"
                     >
                       <img
-                        src={`${storageUrl}/${item.gambar}`}
+                        src={item.gambar}
                         alt={item.nama_produk}
                         className="w-[110px] h-[110px] rounded-2xl"
                       />
@@ -156,7 +160,7 @@ const DetailDashboard = () => {
                       className="flex justify-start items-center text-gray-700"
                     >
                       <img
-                        src={`${storageUrl}/${item.gambar}`}
+                        src={item.gambar}
                         alt={item.nama_produk}
                         className="w-[110px] h-[110px] rounded-2xl"
                       />

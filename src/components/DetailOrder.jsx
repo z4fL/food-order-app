@@ -16,11 +16,15 @@ const DetailOrder = () => {
   useEffect(() => {
     setIsLoading(true);
     const fetchData = async () => {
-      await axios.get(`${apiUrl}/orders/${uuid}`).then((res) => {
-        console.log(res.data.data);
-        setDetailOrder(res.data.data);
-        setIsLoading(false);
-      });
+      await axios
+        .get(`${apiUrl}/orders/${uuid}`, {
+          headers: { "ngrok-skip-browser-warning": "1" },
+        })
+        .then((res) => {
+          console.log(res.data.data);
+          setDetailOrder(res.data.data);
+          setIsLoading(false);
+        });
     };
 
     fetchData();
@@ -57,7 +61,7 @@ const DetailOrder = () => {
                       className="flex justify-start items-center text-gray-700"
                     >
                       <img
-                        src={`${storageUrl}/${item.gambar}`}
+                        src={item.gambar}
                         alt={item.nama_produk}
                         className="w-[110px] h-[110px] rounded-2xl"
                       />
