@@ -100,7 +100,7 @@ const Cart = () => {
   };
 
   return (
-    <div className="flex flex-col mx-auto min-h-screen max-w-md bg-[#F8F8FF] relative">
+    <div className="flex flex-col mx-auto min-h-screen max-w-md md:max-w-3xl lg:max-w-5xl xl:max-w-6xl bg-[#F8F8FF] relative">
       <div className="flex-1 relative px-6 pb-14">
         <div className="flex pt-8">
           <button className="cursor-pointer" onClick={handleBack}>
@@ -110,7 +110,7 @@ const Cart = () => {
             Meja {nomorMeja}
           </h3>
         </div>
-        <div className="mt-10 mb-[260px]">
+        <div className="relative flex justify-between mt-10 mb-[260px] md:mx-auto lg:mx-0 md:max-w-xl lg:max-w-full">
           <div className="flex flex-col gap-5">
             {listCart.map((item) => (
               <div
@@ -145,7 +145,7 @@ const Cart = () => {
                     </button>
                   </div>
                 </div>
-                <div className="flex flex-col justify-center ml-5">
+                <div className="flex flex-col justify-center ml-5 lg:ml-16">
                   <button
                     className="cursor-pointer"
                     onClick={() => handleRemove(item.id)}
@@ -156,9 +156,31 @@ const Cart = () => {
               </div>
             ))}
           </div>
+          <div className="hidden lg:sticky top-10 lg:flex flex-col bg-gray-900 px-10 py-7 rounded-2xl lg:w-sm h-max">
+            <div className="flex justify-between pb-3">
+              <span className="font-poppins font-medium text-lg text-white">
+                Catatan
+              </span>
+              <ChevronRightIcon className="w-6 h-6 text-white" />
+            </div>
+            <div className="flex justify-between pb-4">
+              <span className="font-poppins font-medium text-xl text-white">
+                Total
+              </span>
+              <span className="font-poppins font-bold text-2xl text-white">
+                {formatRupiah(totalHarga)}
+              </span>
+            </div>
+            <button
+              onClick={() => handleOrder()}
+              className="w-full bg-[#fb5f48] rounded-lg py-4 font-poppins font-medium text-xl text-white cursor-pointer"
+            >
+              Pesan Sekarang
+            </button>
+          </div>
         </div>
       </div>
-      <div className="sticky bottom-0 inset-x-0 bg-gray-900 px-10 py-7 rounded-t-3xl">
+      <div className="sticky lg:hidden bottom-0 inset-x-0 bg-gray-900 px-10 py-7 rounded-t-3xl">
         <div className="flex justify-between pb-3">
           <span className="font-poppins font-medium text-lg text-white">
             Catatan

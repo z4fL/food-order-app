@@ -48,9 +48,9 @@ const Login = () => {
   };
 
   return (
-    <div className="mx-auto min-h-screen max-w-md bg-[#F8F8FF] relative">
-      <div className="relative px-6 pb-14">
-        <h3 className="pt-32 font-poppins font-bold text-3xl text-center text-gray-700">
+    <div className="mx-auto min-h-screen max-w-md md:max-w-3xl lg:max-w-5xl xl:max-w-6xl bg-[#F8F8FF] relative">
+      <div className="relative mx-auto px-6 pb-14 max-w-md">
+        <h3 className="pt-32 lg:pt-20 font-poppins font-bold text-3xl text-center text-gray-700">
           Login
         </h3>
         <div className="mt-8">

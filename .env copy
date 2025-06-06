@@ -1,6 +1,5 @@
 VITE_BASE_URL=https://deeply-lenient-mammoth.ngrok-free.app
 VITE_API_URL=${VITE_BASE_URL}/api
-VITE_STORAGE_URL=${VITE_BASE_URL}/storage
 
 VITE_PUSHER_APP_KEY=
 VITE_PUSHER_CLUSTER=

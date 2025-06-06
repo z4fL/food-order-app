@@ -59,7 +59,7 @@ const DetailDashboard = () => {
   };
 
   return (
-    <div className="mx-auto min-h-screen max-w-md bg-[#F8F8FF] relative">
+    <div className="mx-auto min-h-screen max-w-md md:max-w-3xl lg:max-w-5xl xl:max-w-6xl bg-[#F8F8FF] relative">
       {isLoading && (
         <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center z-50 bg-white/70">
           <div className="loader "></div>
@@ -79,7 +79,7 @@ const DetailDashboard = () => {
             </h4>
           </div>
         </div>
-        <div className="mt-4">
+        <div className="my-6">
           <div className="flex gap-2 font-poppins">
             <button
               className={`px-4 py-2 rounded-lg font-semibold text-gray-950 ${
@@ -94,7 +94,7 @@ const DetailDashboard = () => {
             <button
               className={`px-4 py-2 rounded-lg font-semibold text-gray-950 ${
                 detailOrder.status === "diproses"
-                  ? "bg-blue-500"
+                  ? "bg-blue-400"
                   : "bg-gray-300"
               }`}
               onClick={() => handleStatus("diproses")}
@@ -104,84 +104,106 @@ const DetailDashboard = () => {
             </button>
             <button
               className={`px-4 py-2 rounded-lg font-semibold text-gray-950 ${
-                detailOrder.status === "selesai"
-                  ? "bg-green-500"
+                detailOrder.status === "diantar"
+                  ? "bg-green-400"
                   : "bg-gray-300"
               }`}
-              onClick={() => handleStatus("selesai")}
-              disabled={detailOrder.status === "selesai" || isLoading}
+              onClick={() => handleStatus("diantar")}
+              disabled={detailOrder.status === "diantar" || isLoading}
             >
-              Selesai
+              Diantar
             </button>
           </div>
         </div>
-        <div className="mt-6 px-2">
+        <div className="flex justify-between">
           {detailOrder.details && (
-            <>
-              <h5 className="font-poppins font-medium text-2xl text-gray-700 mb-2">
-                Makanan
-              </h5>
-              <div className="flex flex-col gap-5 mb-6">
-                {detailOrder.details
-                  .filter((item) => item.kategori === "makanan")
-                  .map((item) => (
-                    <div
-                      key={item.id}
-                      className="flex justify-start items-center text-gray-700"
-                    >
-                      <img
-                        src={item.gambar}
-                        alt={item.nama_produk}
-                        className="w-[110px] h-[110px] rounded-2xl"
-                      />
-                      <div className="grow flex flex-col font-poppins ml-5">
-                        <p className="font-medium text-base capitalize">
-                          {item.nama_produk}
-                        </p>
-                        <span className="mt-1 text-lg font-medium">
-                          {item.qty + " x " + item.harga_produk}
-                        </span>
-                        <span className="mt-2 text-xl font-bold">
-                          {formatRupiah(item.total_harga)}
-                        </span>
+            <div className="px-2 flex flex-col md:flex-row gap-10">
+              <div className="">
+                <h5 className="font-poppins font-medium text-2xl text-gray-700 mb-2">
+                  Makanan
+                </h5>
+                <div className="flex flex-col gap-5 mb-6">
+                  {detailOrder.details
+                    .filter((item) => item.kategori === "makanan")
+                    .map((item) => (
+                      <div
+                        key={item.id}
+                        className="flex justify-start items-center text-gray-700"
+                      >
+                        <img
+                          src={item.gambar}
+                          alt={item.nama_produk}
+                          className="w-[110px] h-[110px] rounded-2xl"
+                        />
+                        <div className="grow flex flex-col font-poppins ml-5">
+                          <p className="font-medium text-base capitalize">
+                            {item.nama_produk}
+                          </p>
+                          <span className="mt-1 text-lg font-medium">
+                            {item.qty + " x " + item.harga_produk}
+                          </span>
+                          <span className="mt-2 text-xl font-bold">
+                            {formatRupiah(item.total_harga)}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                </div>
               </div>
-              <h5 className="font-poppins font-medium text-2xl text-gray-700 mb-2">
-                Minuman
-              </h5>
-              <div className="flex flex-col gap-5">
-                {detailOrder.details
-                  .filter((item) => item.kategori === "minuman")
-                  .map((item) => (
-                    <div
-                      key={item.id}
-                      className="flex justify-start items-center text-gray-700"
-                    >
-                      <img
-                        src={item.gambar}
-                        alt={item.nama_produk}
-                        className="w-[110px] h-[110px] rounded-2xl"
-                      />
-                      <div className="grow flex flex-col font-poppins ml-5">
-                        <p className="font-medium text-base capitalize">
-                          {item.nama_produk}
-                        </p>
-                        <span className="mt-1 text-lg font-medium">
-                          {item.qty + " x " + item.harga_produk}
-                        </span>
-                        <span className="mt-2 text-xl font-bold">
-                          {formatRupiah(item.total_harga)}
-                        </span>
+              <div className="">
+                <h5 className="font-poppins font-medium text-2xl text-gray-700 mb-2">
+                  Minuman
+                </h5>
+                <div className="flex flex-col gap-5">
+                  {detailOrder.details
+                    .filter((item) => item.kategori === "minuman")
+                    .map((item) => (
+                      <div
+                        key={item.id}
+                        className="flex justify-start items-center text-gray-700"
+                      >
+                        <img
+                          src={item.gambar}
+                          alt={item.nama_produk}
+                          className="w-[110px] h-[110px] rounded-2xl"
+                        />
+                        <div className="grow flex flex-col font-poppins ml-5">
+                          <p className="font-medium text-base capitalize">
+                            {item.nama_produk}
+                          </p>
+                          <span className="mt-1 text-lg font-medium">
+                            {item.qty + " x " + item.harga_produk}
+                          </span>
+                          <span className="mt-2 text-xl font-bold">
+                            {formatRupiah(item.total_harga)}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                </div>
               </div>
-            </>
+            </div>
           )}
+          <div className="hidden lg:flex flex-col">
+            <div className="flex gap-40 mt-8 px-2">
+              <h3 className="font-poppins font-bold text-xl/10 text-gray-700">
+                Total
+              </h3>
+              <h4 className="font-poppins font-bold text-2xl text-gray-700">
+                {formatRupiah(detailOrder.total_harga)}
+              </h4>
+            </div>
+            <div className="flex flex-col mt-4 gap-4">
+              <h3 className="font-poppins font-bold text-xl text-gray-700">
+                Catatan
+              </h3>
+              <h4 className="font-poppins font-regular text-lg text-gray-700">
+                {!detailOrder.catatan && "-"}
+              </h4>
+            </div>
+          </div>
         </div>
-        <div className="flex justify-between mt-8 px-2">
+        <div className="lg:hidden flex justify-between mt-8 px-2">
           <h3 className="font-poppins font-bold text-xl/10 text-gray-700">
             Total
           </h3>
@@ -189,7 +211,7 @@ const DetailDashboard = () => {
             {formatRupiah(detailOrder.total_harga ?? 0)}
           </h4>
         </div>
-        <div className="flex flex-col mt-4 gap-4">
+        <div className="lg:hidden flex flex-col mt-4 gap-4">
           <h3 className="font-poppins font-bold text-xl text-gray-700">
             Catatan
           </h3>

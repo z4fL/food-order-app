@@ -159,7 +159,7 @@ const Menu = () => {
   };
 
   return (
-    <div className="mx-auto min-h-screen max-w-md bg-[#F8F8FF] relative">
+    <div className="mx-auto min-h-screen max-w-md md:max-w-3xl lg:max-w-5xl xl:max-w-6xl bg-[#F8F8FF] relative">
       <div className="relative px-6 pb-28">
         <h3 className="pt-8 font-poppins font-bold text-3xl text-gray-700">
           Meja {nomorMeja}
@@ -210,7 +210,7 @@ const Menu = () => {
                 id="makanan"
                 className={`pt-5 pb-6 ${!showMakanan && "hidden"}`}
               >
-                <div className="grid grid-cols-2 gap-6 content-start">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 content-start">
                   {produks
                     .filter((product) => product.kategori === "makanan")
                     .map((product) => (
@@ -244,7 +244,7 @@ const Menu = () => {
                 id="minuman"
                 className={`pt-5 pb-6 ${!showMinuman && "hidden"}`}
               >
-                <div className="grid grid-cols-2 gap-6 content-start">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 content-start">
                   {produks
                     .filter((product) => product.kategori === "minuman")
                     .map((product) => (

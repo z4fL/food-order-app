@@ -75,7 +75,7 @@ const Dashboard = () => {
 
   return (
     <div>
-      <div className="mx-auto min-h-screen max-w-md bg-[#F8F8FF] relative">
+      <div className="mx-auto min-h-screen max-w-md md:max-w-3xl lg:max-w-5xl xl:max-w-6xl bg-[#F8F8FF] relative">
         <div className="relative px-6 pb-12">
           <div className="flex justify-between items-center pt-10">
             <h3 className="font-poppins font-bold text-3xl text-gray-700">
@@ -114,12 +114,12 @@ const Dashboard = () => {
               return (
                 <div
                   key={item.id}
-                  className="flex flex-col mt-6 p-4 rounded-xl bg-white shadow"
+                  className="mx-auto flex flex-col mt-6 p-4 max-w-md md:max-w-lg lg:max-w-xl rounded-xl bg-white shadow"
                   onClick={() => handleClickOrder(item.uuid)}
                 >
                   <div className="mb-3">
-                    <h3 className="mb-1 font-poppins font-bold text-xl text-gray-700">
-                      Meja {item.meja}
+                    <h3 className="mb-1 font-poppins font-bold text-xl lg:text-2xl text-gray-700 capitalize">
+                      Meja {item.meja} | {item.status}
                     </h3>
                     <h4 className="font-poppins font-medium text-lg text-gray-700">
                       Total Harga {formatRupiah(item.total_harga)}
