@@ -5,13 +5,15 @@ import {
   PlusIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { CartContext } from "../context/CartContext";
 import axios from "axios";
 import formatRupiah from "../utilities/FormatRupiah";
+import Loader from "./Loader";
 
 const Cart = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const { nomorMeja } = useParams();
   const { cart, setCart } = useContext(CartContext);
   const navigate = useNavigate();
@@ -73,6 +75,7 @@ const Cart = () => {
   };
 
   const handleOrder = () => {
+    setIsLoading(true);
     const data = {
       catatan: null,
       meja: parseInt(nomorMeja),
@@ -96,7 +99,8 @@ const Cart = () => {
       .catch((err) => {
         alert(err);
         console.error(err);
-      });
+      })
+      .finally(() => setIsLoading(false));
   };
 
   return (
@@ -198,8 +202,9 @@ const Cart = () => {
         <button
           onClick={() => handleOrder()}
           className="w-full bg-[#fb5f48] rounded-lg py-4 font-poppins font-medium text-xl text-white cursor-pointer"
+          disabled={isLoading}
         >
-          Pesan Sekarang
+          {isLoading ? <Loader /> : "Pesan Sekarang"}
         </button>
       </div>
     </div>

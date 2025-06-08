@@ -9,7 +9,8 @@ import Pusher from "pusher-js";
 const DetailOrder = () => {
   const [detailOrder, setDetailOrder] = useState({});
   const { uuid } = useParams();
-  const [isLoading, setIsLoading] = useState(true);
+  const [showSplashScreen, setshowSplashScreen] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [statusOrder, setStatusOrder] = useState("");
 
   const apiUrl = import.meta.env.VITE_API_URL;
@@ -25,12 +26,15 @@ const DetailOrder = () => {
         console.log(res.data.data);
         setDetailOrder(res.data.data);
         setStatusOrder(res.data.data.status);
-        setIsLoading(false);
-      });
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => setshowSplashScreen(false));
   };
 
   useEffect(() => {
-    setIsLoading(true);
+    setshowSplashScreen(true);
 
     const pusher = new Pusher(pusherKey, {
       cluster: pusherCluster,
@@ -51,14 +55,14 @@ const DetailOrder = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (isLoading) {
+  if (showSplashScreen) {
     return <SplashScreen />;
   }
 
   // Helper to get color based on status
   const getStatusColor = (status) => {
     switch (status) {
-      case "pending":
+      case "belum dibayar":
         return "bg-yellow-400";
       case "diproses":
         return "bg-blue-400";
@@ -67,6 +71,21 @@ const DetailOrder = () => {
       default:
         return "bg-gray-300";
     }
+  };
+
+  const payNow = async () => {
+    setIsLoading(true);
+    await axios
+      .post(`${apiUrl}/pay-order/${uuid}`, {
+        headers: { "ngrok-skip-browser-warning": "1" },
+      })
+      .then((res) => {
+        window.location.href = res.data.checkout_link;
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => setIsLoading(false));
   };
 
   return (
@@ -83,7 +102,7 @@ const DetailOrder = () => {
 
         <div className="py-6 pl-2 flex items-center gap-3">
           <span className="font-poppins font-medium text-xl text-gray-700">
-            Status Pesanan :{" "}
+            Status :{" "}
           </span>
           <div className="flex gap-2 font-poppins">
             <button
@@ -91,8 +110,8 @@ const DetailOrder = () => {
                 statusOrder
               )}`}
             >
-              {statusOrder === "pending"
-                ? "Pending"
+              {statusOrder === "belum dibayar"
+                ? "Belum Dibayar"
                 : statusOrder === "diproses"
                 ? "Diproses"
                 : statusOrder === "diantar"
@@ -103,12 +122,12 @@ const DetailOrder = () => {
         </div>
         <div className="flex justify-between">
           {detailOrder.details && (
-            <div className="px-2 flex flex-col md:flex-row gap-10">
+            <div className="flex flex-col md:flex-row gap-10 lg:gap-4">
               <div className="">
                 <h5 className="font-poppins font-medium text-2xl text-gray-700 mb-2">
                   Makanan
                 </h5>
-                <div className="flex flex-col gap-5 mb-6">
+                <div className="flex flex-col gap-5">
                   {detailOrder.details
                     .filter((item) => item.kategori === "makanan")
                     .map((item) => (
@@ -170,8 +189,8 @@ const DetailOrder = () => {
               </div>
             </div>
           )}
-          <div className="hidden lg:flex flex-col">
-            <div className="flex gap-40 mt-8 px-2">
+          <div className="hidden lg:flex flex-col p-4 bg-white rounded-lg shadow-lg">
+            <div className="flex gap-32 mt-4 px-2">
               <h3 className="font-poppins font-bold text-xl/10 text-gray-700">
                 Total
               </h3>
@@ -189,23 +208,36 @@ const DetailOrder = () => {
             </div>
           </div>
         </div>
-        <div className="lg:hidden flex justify-between mt-8 px-2">
-          <h3 className="font-poppins font-bold text-xl/10 text-gray-700">
-            Total
-          </h3>
-          <h4 className="font-poppins font-bold text-2xl text-gray-700">
-            {formatRupiah(detailOrder.total_harga ?? 0)}
-          </h4>
-        </div>
-        <div className="lg:hidden flex flex-col mt-4 gap-4">
-          <h3 className="font-poppins font-bold text-xl text-gray-700">
-            Catatan
-          </h3>
-          <h4 className="font-poppins font-regular text-lg text-gray-700">
-            {!detailOrder.catatan && "-"}
-          </h4>
+        <div className="lg:hidden">
+          <div className="flex justify-between mt-8 px-2">
+            <h3 className="font-poppins font-bold text-xl/10 text-gray-700">
+              Total
+            </h3>
+            <h4 className="font-poppins font-bold text-2xl text-gray-700">
+              {formatRupiah(detailOrder.total_harga ?? 0)}
+            </h4>
+          </div>
+          <div className="flex flex-col mt-4 mb-20 gap-4">
+            <h3 className="font-poppins font-bold text-xl text-gray-700">
+              Catatan
+            </h3>
+            <h4 className="font-poppins font-regular text-lg text-gray-700">
+              {!detailOrder.catatan && "-"}
+            </h4>
+          </div>
         </div>
       </div>
+      {statusOrder == "belum dibayar" && (
+        <div className="fixed right-6 bottom-10 z-20 flex flex-col items-end mt-10">
+          <button
+            onClick={() => payNow()}
+            disabled={isLoading}
+            className="py-3 px-4 bg-[#FF6D58] rounded-lg cursor-pointer group disabled:bg-[#b97267] font-poppins font-semibold text-lg text-gray-950 disabled:hover:text-white"
+          >
+            Bayar Sekarang
+          </button>
+        </div>
+      )}
     </div>
   );
 };

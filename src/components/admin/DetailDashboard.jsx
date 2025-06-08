@@ -190,7 +190,7 @@ const DetailDashboard = () => {
                 Total
               </h3>
               <h4 className="font-poppins font-bold text-2xl text-gray-700">
-                {formatRupiah(detailOrder.total_harga)}
+                {formatRupiah(detailOrder.total_harga ?? 0)}
               </h4>
             </div>
             <div className="flex flex-col mt-4 gap-4">
