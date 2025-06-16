@@ -11,6 +11,7 @@ import Dashboard from "./components/admin/Dashboard";
 import Login from "./components/admin/Login";
 import Menu from "./components/Menu";
 import DetailDashboard from "./components/admin/DetailDashboard";
+import Kasir from "./components/kasir/Kasir";
 
 function App() {
   const [showSplash, setShowSplash] = useState(
@@ -53,6 +54,14 @@ function App() {
           element={
             <ProtectedRoute>
               <DetailDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="cashier"
+          element={
+            <ProtectedRoute>
+              <Kasir />
             </ProtectedRoute>
           }
         />

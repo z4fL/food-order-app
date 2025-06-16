@@ -12,6 +12,8 @@ const DetailOrder = () => {
   const [showSplashScreen, setshowSplashScreen] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [statusOrder, setStatusOrder] = useState("");
+  const [showPayOption, setShowPayOption] = useState(false);
+  const [showTunaiPopup, setShowTunaiPopup] = useState(false);
 
   const apiUrl = import.meta.env.VITE_API_URL;
   const pusherKey = import.meta.env.VITE_PUSHER_APP_KEY;
@@ -230,12 +232,63 @@ const DetailOrder = () => {
       {statusOrder == "belum dibayar" && (
         <div className="fixed right-6 bottom-10 z-20 flex flex-col items-end mt-10">
           <button
-            onClick={() => payNow()}
+            onClick={() => setShowPayOption(true)}
             disabled={isLoading}
             className="py-3 px-4 bg-[#FF6D58] rounded-lg cursor-pointer group disabled:bg-[#b97267] font-poppins font-semibold text-lg text-gray-950 disabled:hover:text-white"
           >
             Bayar Sekarang
           </button>
+        </div>
+      )}
+      {showPayOption && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-xl shadow-2xl p-8 flex flex-col items-center gap-6 min-w-[300px]">
+            <h2 className="font-poppins font-bold text-2xl text-gray-800 mb-2">
+              Pilih Metode Pembayaran
+            </h2>
+            <div className="flex flex-col gap-4 w-full">
+              <button
+                className="w-full py-3 px-6 rounded-lg bg-[#FF6D58] text-lg font-semibold text-gray-950 hover:bg-[#ff8a7a] transition"
+                onClick={() => {
+                  setShowPayOption(false);
+                  payNow();
+                }}
+                disabled={isLoading}
+              >
+                Digital
+              </button>
+              <button
+                className="w-full py-3 px-6 rounded-lg bg-gray-200 text-lg font-semibold text-gray-700 hover:bg-gray-300 transition"
+                onClick={() => {
+                  setShowPayOption(false);
+                  setShowTunaiPopup(true);
+                }}
+              >
+                Tunai
+              </button>
+            </div>
+            <button
+              className="mt-4 text-red-500 hover:text-gray-800 font-medium"
+              onClick={() => setShowPayOption(false)}
+            >
+              Batal
+            </button>
+          </div>
+        </div>
+      )}
+      {showTunaiPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-xl shadow-2xl p-8 flex flex-col items-center gap-6 min-w-[300px]">
+            <h2 className="font-poppins font-bold text-2xl text-gray-800 mb-2">
+              Silahkan pergi ke kasir
+            </h2>
+            <button
+              className="mt-4 text-gray-700 hover:text-gray-800 font-medium"
+              onClick={() => setShowTunaiPopup(false)}
+            >
+              OK
+            </button>
+          </div>
         </div>
       )}
     </div>
