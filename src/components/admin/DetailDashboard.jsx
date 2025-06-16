@@ -83,13 +83,13 @@ const DetailDashboard = () => {
           <div className="flex gap-2 font-poppins">
             <button
               className={`px-4 py-2 rounded-lg font-semibold text-gray-950 ${
-                detailOrder.status === "pending"
+                detailOrder.status === "belum dibayar"
                   ? "bg-yellow-400"
                   : "bg-gray-300"
               }`}
-              disabled={detailOrder.status === "pending" || isLoading}
+              disabled={detailOrder.status === "belum dibayar" || isLoading}
             >
-              Pending
+              Belum Dibayar
             </button>
             <button
               className={`px-4 py-2 rounded-lg font-semibold text-gray-950 ${

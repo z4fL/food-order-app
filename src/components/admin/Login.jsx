@@ -34,7 +34,12 @@ const Login = () => {
       .then((res) => {
         localStorage.setItem("access_token", res.data.access_token);
 
-        navigate("/dashboard");
+        const role = res.data.role;
+        if (role == "admin") {
+          navigate("/dashboard");
+        } else if (role == "cashier") {
+          navigate("/cashier");
+        }
       })
       .catch((error) => {
         const errorStatus = error.response.status;
